@@ -1,14 +1,14 @@
 /* ============ LEADS (shared database) ============ */
 const STAGES=[
- {id:'new',en:'New lead',ar:'فرصة جديدة',c:'#8A94A6'},
- {id:'contacted',en:'Contacted',ar:'تم التواصل',c:'#1F8FB3'},
- {id:'discovery',en:'Discovery',ar:'الاستكشاف',c:'#7B61C4'},
- {id:'demo',en:'Demo',ar:'العرض التوضيحي',c:'#3A1F80'},
- {id:'scope',en:'Scope & Vision',ar:'النطاق والرؤية',c:'#9C1C69'},
- {id:'proposal',en:'Proposal',ar:'العرض الفني والمالي',c:'#E0592E'},
- {id:'negotiation',en:'Negotiation',ar:'التفاوض',c:'#C9A24B'},
- {id:'won',en:'Won',ar:'تم الفوز',c:'#25A27F'},
- {id:'lost',en:'Lost',ar:'لم تنجح',c:'#B23A3A'}];
+ {id:'new',en:'New lead',ar:'فرصة جديدة',c:'#9A97A8'},
+ {id:'contacted',en:'Contacted',ar:'تم التواصل',c:'#3F1F55'},
+ {id:'discovery',en:'Discovery',ar:'الاستكشاف',c:'#8E2DBA'},
+ {id:'demo',en:'Demo',ar:'العرض التوضيحي',c:'#6B009D'},
+ {id:'scope',en:'Scope & Vision',ar:'النطاق والرؤية',c:'#B700A5'},
+ {id:'proposal',en:'Proposal',ar:'العرض الفني والمالي',c:'#D9468F'},
+ {id:'negotiation',en:'Negotiation',ar:'التفاوض',c:'#E0A13A'},
+ {id:'won',en:'Won',ar:'تم الفوز',c:'#1FA27A'},
+ {id:'lost',en:'Lost',ar:'لم تنجح',c:'#C0392B'}];
 const ACT_TYPES=[['call','Call','مكالمة'],['meeting','Meeting','اجتماع'],['email','Email','بريد إلكتروني'],['demo','Demo','عرض توضيحي'],['note','Note','ملاحظة']];
 const STG_NAMES=[['Requirements and analysis','التحليل وجمع المتطلبات'],['Design','التصميم'],['Development and configuration','التطوير والإعداد'],['Testing and UAT','الاختبار وقبول المستخدم (UAT)'],['Deployment and go-live','الإطلاق والتشغيل']];
 const stg=id=>STAGES.find(s=>s.id===id)||STAGES[0];
@@ -192,7 +192,7 @@ function lTimeline(l,ed){
   const head=`<div class="tl-sum"><span>${L('Start','البداية')}: <b>${fmtD(startT)}</b></span><span>${L('Expected project end','نهاية المشروع المتوقعة')}: <b>${end?fmtD(end):'—'}</b></span><span>${L('Work week Sunday to Thursday','أسبوع العمل من الأحد إلى الخميس')}</span><span style="flex:1"></span>${rows.some(r=>r.kind==='item')?`<button class="btn green" onclick="dlTimeline()">⬇ ${L('Download Excel (AR + EN)','تنزيل Excel (عربي + إنجليزي)')}</button>`:''}</div>
    <div class="legend">${STG_NAMES.map((s,i)=>`<span><i style="background:#${STAGE_COL[i]}"></i>${L(s[0],s[1])}</span>`).join('')}</div>`;
   const gantt=rows.some(r=>r.kind==='item')?`<div class="gantt-wrap"><table class="gantt"><tr><th class="gl">${L('Item and stage','البند والمرحلة')}</th><th>${L('Start','البداية')}</th><th>${L('End','النهاية')}</th>${Array.from({length:weeks},(_,w)=>{const d=new Date(startT+7*w*864e5);return `<th class="wk">${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}</th>`}).join('')}</tr>
-   ${rows.map(r=>{const col=r.kind==='stage'?'#'+STAGE_COL[r.stage]:r.kind==='item'?'#C9C0E3':'#9C1C69';
+   ${rows.map(r=>{const col=r.kind==='stage'?'#'+STAGE_COL[r.stage]:r.kind==='item'?'#C9C0E3':'#B700A5';
      const label=r.kind==='stage'?L(STG_NAMES[r.stage][0],STG_NAMES[r.stage][1]):r.kind==='item'?`<b>${esc(r.code)}</b> ${esc(r.name||'')}`:esc(r.name);
      return `<tr class="${r.kind}"><td class="gl">${label}</td><td class="dt">${r.dur?fmtD(r.startD):''}</td><td class="dt">${r.dur?fmtD(r.end):''}</td>${Array.from({length:weeks},(_,w)=>`<td class="wk">${w>=r.sw&&w<r.sw+r.dur?`<i style="background:${col}"></i>`:''}</td>`).join('')}</tr>`}).join('')}</table></div>
    <p class="small muted">${L('Durations are first estimates pending confirmation by the technical team and the client. Each item has five sequential SDLC stages, each starting when the previous one ends. For ready products, development means configuration and customisation; for new builds it means actual development.','المدد تقديرات أولية بانتظار تأكيد الفريق التقني والعميل. لكل بند خمس مراحل متتالية، تبدأ كل منها عند انتهاء السابقة. في المنتجات الجاهزة، مرحلة التطوير تعني الإعداد والتخصيص. وفي الحلول الجديدة تعني تطويراً فعلياً.')}</p>`:'';
