@@ -32,7 +32,7 @@ function initLeads(){
     LEADS=q.docs.map(d=>{let x={};try{x=JSON.parse(d.data().json||'{}')}catch(e){}return {...x,id:d.id}}).sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));
     dbState='live';refreshLeads()},e=>{dbState='error';refreshLeads()});
 }
-function refreshLeads(){if(typeof cur==='undefined')return;if(cur.view==='leads'||(cur.view==='lead'&&!document.activeElement?.closest?.('#leadForm')))render()}
+function refreshLeads(){if(typeof cur==='undefined')return;if(cur.view==='leads'||(cur.view==='exec'&&document.activeElement?.tagName!=='TEXTAREA')||(cur.view==='lead'&&!document.activeElement?.closest?.('#leadForm')))render()}
 let writeQ=Promise.resolve();
 function saveLead(l){
   l.updatedAt=new Date().toISOString();

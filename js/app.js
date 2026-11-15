@@ -21,12 +21,13 @@ function previewRole(r){setRole(r)}
 function renderRoleBadge(){const b=document.getElementById('roleBadge');if(!b)return;b.textContent=L('Your access','صلاحيتك')+': '+L(...ROLES[realRole]);if(!document.getElementById('soBtn')){const so=document.createElement('button');so.id='soBtn';so.className='so';so.onclick=()=>signOut();document.getElementById('accBadge').appendChild(so)}document.getElementById('soBtn').textContent=L('Sign out','خروج');
   const s=document.getElementById('previewAs');if(realRole==='leadership'){s.style.display='';s.innerHTML=Object.keys(ROLES).map(k=>`<option value="${k}" ${k===role?'selected':''}>${L('Preview as','عرض كـ')} ${L(...ROLES[k])}</option>`).join('')}else s.style.display='none';}
 function go(view,prod,cat){if(view==='lead'&&cur.prod!==prod){leadDraft=null;leadTab='overview'}cur={view,prod:prod||null,cat:cat||'overview'};const h=view==='product'?prod+(cat&&cat!=='overview'?'-'+cat:''):view==='lead'?'lead-'+prod:view;if(location.hash.slice(1)!==h)history.replaceState(null,'','#'+h);render();window.scrollTo(0,0);}
-function fromHash(){const h=location.hash.slice(1);if(!h||h==='home')return go('home');if(['templates','users','setup','finder','leads'].includes(h))return go(h);if(h.startsWith('lead-'))return go('lead',h.slice(5));const [p,...c]=h.split('-');if(PRODUCTS.find(x=>x.id===p))return go('product',p,c.join('-')||'overview');go('home');}
+function fromHash(){const h=location.hash.slice(1);if(!h||h==='home')return go('home');if(['templates','users','setup','finder','leads','exec'].includes(h))return go(h);if(h.startsWith('lead-'))return go('lead',h.slice(5));const [p,...c]=h.split('-');if(PRODUCTS.find(x=>x.id===p))return go('product',p,c.join('-')||'overview');go('home');}
 window.addEventListener('hashchange',fromHash);
 
 function renderTabs(){
   let t=`<button class="tab ${cur.view==='home'||cur.view==='product'?'on':''}" onclick="go('home')">⌂ ${L('Products','المنتجات')}</button>`;
   if(role==='client'){$('#tabs').innerHTML=t;return}
+  if(role==='leadership'&&realRole==='leadership')t+=`<button class="tab ${cur.view==='exec'?'on':''}" onclick="go('exec')" style="font-weight:700">★ ${L('Leadership','القيادة')}</button>`;
   t+=`<button class="tab ${cur.view==='leads'||cur.view==='lead'?'on':''}" onclick="go('leads')">◈ ${L('Leads','الفرص')}${LEADS.length?` <span class="n">${LEADS.length}</span>`:''}</button>`;
   t+=`<button class="tab ${cur.view==='finder'?'on':''}" onclick="go('finder')">◎ ${L('Product finder','مكتشف المنتج')}</button>`;
   t+=`<button class="tab ${cur.view==='templates'?'on':''}" onclick="go('templates')">▤ ${L('Templates','القوالب')}</button>`;
@@ -34,7 +35,7 @@ function renderTabs(){
   t+=`<button class="tab ${cur.view==='setup'?'on':''}" onclick="go('setup')">ⓘ ${L('How it works','آلية العمل')}</button>`;
   $('#tabs').innerHTML=t;
 }
-function render(){renderTabs();main.innerHTML=({leads:vLeads,lead:vLead,home:vHome,finder:vFinder,product:vProduct,templates:vTemplates,users:vUsers,setup:vSetup}[cur.view])();if(cur.view==='product'&&cur.cat==='qualify')score();}
+function render(){renderTabs();main.innerHTML=({exec:vExec,leads:vLeads,lead:vLead,home:vHome,finder:vFinder,product:vProduct,templates:vTemplates,users:vUsers,setup:vSetup}[cur.view])();if(cur.view==='product'&&cur.cat==='qualify')score();}
 
 /* ============ VIEWS ============ */
 function logoImg(p,h){return `<img src="${LOGOS[p.logo]}" alt="${esc(p.name)} logo" style="height:${h}px;max-width:100%;object-fit:contain;display:block">`}
