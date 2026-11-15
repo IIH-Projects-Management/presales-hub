@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IIH Product Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1A2430;--muted:#5D6B78;--line:#E2E7EC;--soft:#F5EEF9;--bg:#F7F6FB;--brand:#6B009D;--dark:#1E1F31;--accent:#B700A5;
+ --head:"Readex Pro","IBM Plex Sans Arabic",system-ui,sans-serif;--body:"Plus Jakarta Sans","IBM Plex Sans Arabic",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--body);color:var(--ink);background:var(--bg);font-size:15px;line-height:1.55}
+body.rtl{font-family:"IBM Plex Sans Arabic","Plus Jakarta Sans",system-ui,sans-serif}
+h1,h2,h3,h4{font-family:var(--head);font-weight:600;color:var(--dark);margin:0 0 .4em}
+button{font-family:inherit;cursor:pointer}
+.top{background:var(--dark);color:#fff;display:flex;align-items:center;gap:14px;padding:0 28px;height:62px;position:sticky;top:0;z-index:10}
+.top .brand{display:flex;align-items:center;gap:12px;cursor:pointer;font-family:var(--head);font-size:18px}
+.top .bdiv{width:1px;height:26px;background:rgba(255,255,255,.3)}
+.top .sp{flex:1}
+.lang{display:flex;background:rgba(255,255,255,.1);border-radius:8px;padding:3px}
+.lang button{border:0;background:none;color:#fff;padding:5px 12px;border-radius:6px;font-weight:600;opacity:.75}
+.lang button.on{background:#fff;color:var(--dark);opacity:1}
+main{max-width:1240px;margin:0 auto;padding:28px 24px 60px}
+.hero{background:linear-gradient(120deg,var(--dark),var(--brand));color:#fff;border-radius:18px;padding:36px 40px;display:flex;gap:30px;align-items:center;margin-bottom:26px}
+.hero h1{color:#fff;font-size:32px;margin:0 0 8px}.hero p{margin:0;opacity:.85;max-width:680px}
+.hero .lg{background:#fff;border-radius:14px;padding:16px 20px;flex:none}
+.sec{display:flex;align-items:center;gap:14px;margin:30px 0 12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.sec span{color:var(--muted)}.sec .grow{flex:1}
+.ghd{margin:18px 0 10px}.ghd b{font-family:var(--head);font-size:17px;color:var(--dark);display:block}.ghd span{font-size:13px;color:var(--muted)}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start;padding:26px}.ph{flex-direction:column;align-items:flex-start!important}}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+.pc{cursor:pointer;border-top:4px solid var(--c);display:flex;flex-direction:column;transition:.15s}
+.pc:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(35,28,58,.1)}
+.pc .lgw{height:60px;display:flex;align-items:center;margin-bottom:12px}
+.pc .cat{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+body.rtl .pc .cat,body.rtl .label{letter-spacing:0;text-transform:none}
+.pc h3{margin:4px 0 6px}.pc p{flex:1;margin:0 0 12px;color:var(--muted);font-size:14px}.pc .go{color:var(--accent);font-weight:700;font-size:13.5px}
+.pc.big{flex-direction:row;align-items:center;gap:28px}.pc.big .lgw{margin:0;width:230px;flex:none;border-inline-end:1px solid var(--line);padding-inline-end:24px;height:auto}
+.intro{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--dark);background:#fff;border:1px solid var(--line);border-radius:30px;padding:6px 16px 6px 6px}
+body.rtl .intro{padding:6px 6px 6px 16px}
+.intro .pl{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:12px}
+.intro b{display:block;font-size:13.5px}.intro small{color:var(--muted);font-size:12px}
+.back{border:0;background:none;color:var(--brand);font-weight:700;padding:0;margin-bottom:14px;font-size:14px}
+.ph{display:flex;gap:24px;align-items:center;border-top:4px solid var(--c)}
+.ph .lgw{width:220px;flex:none}.ph .txt{flex:1;border-inline-start:1px solid var(--line);padding-inline-start:24px}
+.ph h1{font-size:28px;margin:4px 0}.ph .cat{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;position:sticky;top:70px;z-index:5}
+.tabs button{border:0;background:var(--soft);padding:8px 14px;border-radius:20px;font-size:13.5px;color:var(--ink)}
+.tabs button.on{background:var(--dark);color:#fff}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin:14px 0 6px}
+.pitch{font-family:var(--head);font-size:19px;color:var(--dark);border-inline-start:4px solid var(--accent);padding-inline-start:16px;margin:6px 0 14px;font-weight:400}
+.pts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.pts div{background:var(--soft);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:center}
+.pts b{font-family:var(--head);font-size:20px;color:var(--c)}
+.key{background:#F5EEF9;border:1px solid #DCD0F4;border-radius:14px;padding:16px 20px;margin-bottom:14px}
+.journey{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.journey span.s{background:var(--soft);border-radius:8px;padding:6px 12px;font-size:13.5px}.journey b{color:var(--c);margin-inline-end:4px}
+.feat{display:grid;grid-template-columns:1fr 1.2fr 1.4fr;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;margin-bottom:10px}
+.feat>div{padding:14px 16px;border-inline-end:1px solid var(--line)}.feat>div:last-child{border:0;color:var(--muted);font-size:13.5px}
+.feat .f{font-weight:700;color:var(--dark)}
+.fhd{display:grid;grid-template-columns:1fr 1.2fr 1.4fr;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 16px 6px;font-weight:700}
+@media(max-width:900px){.feat,.fhd{grid-template-columns:1fr}.feat>div{border:0}.pts{grid-template-columns:1fr}}
+.vc{padding:0;overflow:hidden}.vc video{width:100%;display:block;background:#000;aspect-ratio:16/9}
+.vc .cap{padding:12px 14px}.chap{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chap button{border:1px solid var(--line);background:#fff;border-radius:16px;padding:3px 10px;font-size:12.5px}
+.shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;cursor:zoom-in}
+.shot img{width:100%;aspect-ratio:16/10;display:block;background:#fff}.shot .cap{padding:10px 12px;font-size:13px}.shot .cap b{display:block;color:var(--dark)}
+table.t{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;font-size:14px}
+table.t th{background:var(--dark);color:#fff;text-align:start;padding:10px 12px;font-weight:600}
+table.t td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}table.t td:first-child{font-weight:600;color:var(--dark);width:26%}
+details{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+details summary{padding:14px 16px;cursor:pointer;font-weight:600;color:var(--dark)}details p{margin:0;padding:0 16px 14px;color:#333}
+.res{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.res span{background:var(--soft);border-radius:8px;padding:6px 10px;font-weight:600;color:var(--brand);font-size:13px}
+.cta{margin-top:28px;background:linear-gradient(120deg,var(--brand),var(--accent));color:#fff;border-radius:16px;padding:26px 30px;display:flex;align-items:center;gap:20px}
+.cta h3{color:#fff;margin:0 0 4px}.cta p{margin:0;opacity:.9}
+.note{background:#EEF2F5;border:1px solid var(--line);color:#3B4A57;padding:8px 14px;border-radius:8px;font-size:13px;margin-bottom:14px}
+.modal{position:fixed;inset:0;background:rgba(10,10,25,.7);display:none;place-items:center;z-index:40;padding:20px}.modal.show{display:grid}
+.modal .box{background:#fff;border-radius:14px;max-width:1000px;width:100%;max-height:92vh;overflow:auto;padding:16px}
+.modal .x{float:inline-end;border:0;background:none;font-size:24px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:20px}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand" id="brand" onclick="goHome()"><img src="../assets/iih-white.png" alt="Ideal Innovation House" style="height:30px"><span class="bdiv"></span><span id="ttl">Product Showcase</span></div><span class="sp"></span>
+ <div class="lang"><button id="lEn" onclick="setLang('en')">EN</button><button id="lAr" onclick="setLang('ar')">ع</button></div></header>
+<main id="main"></main>
+<footer id="foot"></footer>
+<div class="modal" id="modal" onclick="if(event.target===this)closeM()"><div class="box"><button class="x" onclick="closeM()">×</button><div id="mb"></div></div></div>
+<script src="js/products.js" charset="utf-8"></script>
+<script charset="utf-8">
+/* media files are shared with the hub, one folder up */
+PRODUCTS.forEach(p=>{p.videos.forEach(v=>{v.src='../'+v.src;v.poster='../'+v.poster});p.shots.forEach(s=>{s.img='../'+s.img})});
+let lang='en';try{lang=localStorage.getItem('sc-lang')||'en'}catch(e){}
+let view={p:null,tab:'overview',only:false};
+const L=(en,ar)=>lang==='ar'?ar:en, $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const T=(p,k)=>lang==='ar'&&p.ar[k]&&(Array.isArray(p.ar[k])?p.ar[k].length:true)?p.ar[k]:p[k];
+const by=id=>PRODUCTS.find(p=>p.id===id);
+function setLang(l){lang=l;try{localStorage.setItem('sc-lang',l)}catch(e){}render()}
+function goHome(){if(view.only)return;location.hash='';}
+function route(){const h=location.hash.slice(1);if(h.startsWith('only-')&&by(h.slice(5))){view={p:h.slice(5),tab:'overview',only:true}}else if(by(h)){view={p:h,tab:view.p===h?view.tab:'overview',only:false}}else view={p:null,tab:'overview',only:false};render();scrollTo(0,0)}
+window.addEventListener('hashchange',route);
+function logo(p,h){return `<img src="../assets/${p.logo}.png" alt="${esc(p.name)}" style="height:${h}px;max-width:100%;object-fit:contain;display:block">`}
+function card(p,big){const own=p.logo!=='qiyas';return `<div class="card pc ${big?'big':''}" style="--c:${p.color}" onclick="location.hash='${p.id}'"><div class="lgw">${logo(p,big?62:own?54:32)}</div><div style="flex:1;display:flex;flex-direction:column"><div class="cat">${esc(T(p,'cat'))}</div><h3>${esc(p.name)}</h3><p>${esc(T(p,'tagline'))}</p><div class="go">${p.videos.length?'▶ '+L('Video','فيديو')+' · ':''}${L('Learn more →','اعرف المزيد ←')}</div></div></div>`}
+function home(){const core=['mape','hasad','pulse','uno'].map(by),cap=['agent','datahub'].map(by),others=PRODUCTS.filter(p=>p.family!=='qiyas');
+ return `<div class="hero"><div style="flex:1"><h1>${L('Products that measure, predict and improve how organisations perform.','منتجات تقيس أداء الجهات وتتنبأ به وتحسّنه.')}</h1><p>${L('Explore Ideal Innovation House products: what each one does, the benefits it brings, videos and technical answers. Available in Arabic and English.','تعرّف على منتجات بيت الابتكار المثالي: ما يقدمه كل منتج، والفوائد التي يحققها، والفيديوهات والإجابات التقنية. متاح بالعربية والإنجليزية.')}</p></div><div class="lg"><img src="../assets/iih.png" alt="Ideal Innovation House" style="height:56px;display:block"></div></div>
+ <div class="sec"><img src="../assets/qiyas.png" alt="Qiyas AI" style="height:32px"><span>${L('Qiyas AI product family','عائلة منتجات قياس AI')}</span><span class="grow"></span><a class="intro" href="javascript:playIntro()"><span class="pl">▶</span><span><b>${L('Watch: Introduction to the Qiyas products','شاهد: مقدمة عن منتجات قياس')}</b><small>3:56</small></span></a></div>
+ <div class="ghd"><b>${L('Four integrated products','أربعة منتجات متكاملة')}</b><span>${L('Qiyas MAPE, Qiyas HASSAD, Qiyas Pulse and Qiyas Uno are integrated with each other and share one AI layer.','تتكامل Qiyas MAPE وQiyas HASSAD وQiyas Pulse وQiyas Uno مع بعضها وتشترك في طبقة ذكاء اصطناعي واحدة.')}</span></div>
+ <div class="grid g4">${core.map(p=>card(p)).join('')}</div>
+ <div class="ghd"><b>${L('Intelligence layer','طبقة الذكاء')}</b></div>${card(by('cockpit'),true)}
+ <div class="ghd"><b>${L('Platform capabilities','قدرات المنصة')}</b></div><div class="grid g2">${cap.map(p=>card(p)).join('')}</div>
+ ${others.length?`<div class="sec"><h3 style="margin:0">${L('More products','منتجات أخرى')}</h3></div>${others.map(p=>card(p,true)).join('')}`:''}`;}
+function product(){const p=by(view.p);
+ const tabs=[['overview',L('Overview','نظرة عامة')],['features',L('Features & benefits','الميزات والفوائد'),p.features.length],['media',L('Videos & screenshots','الفيديوهات واللقطات'),p.videos.length+p.shots.length],['cases',L('Use cases','حالات الاستخدام'),p.cases.length],['tech',L('Technical','الجوانب التقنية'),p.tech.length],['faq',L('FAQ','الأسئلة الشائعة'),p.faq.length]].filter(t=>t[0]==='overview'||t[2]);
+ if(!tabs.find(t=>t[0]===view.tab))view.tab='overview';
+ const enNote=lang==='ar'&&view.tab!=='overview'?`<div class="note">${L('','هذا القسم متاح حالياً باللغة الإنجليزية.')}</div>`:'';
+ return `${view.only?'':`<button class="back" onclick="location.hash=''">${L('← All products','→ كل المنتجات')}</button>`}
+ <div class="card ph" style="--c:${p.color}"><div class="lgw">${logo(p,p.logo!=='qiyas'?70:38)}</div><div class="txt"><div class="cat">${esc(T(p,'cat'))}</div><h1>${esc(p.name)}</h1><div style="color:var(--muted)">${esc(T(p,'tagline'))}</div></div></div>
+ <div class="tabs">${tabs.map(t=>`<button class="${view.tab===t[0]?'on':''}" onclick="view.tab='${t[0]}';render()">${t[1]}</button>`).join('')}</div>${enNote}
+ ${({overview,features,media,cases,tech,faq})[view.tab](p)}
+ <div class="cta"><div style="flex:1"><h3>${L('Interested in','مهتم بـ')} ${esc(p.name)}${L('?','؟')}</h3><p>${L('Contact your Ideal Innovation House account manager for a tailored demo.','تواصل مع مدير حسابك في بيت الابتكار المثالي لعرض مخصص.')}</p></div></div>`;}
+function vid(p,v,i){return `<div class="card vc"><video id="v${i}" controls preload="metadata" poster="${v.poster}"><source src="${v.src}" type="video/mp4"></video><div class="cap"><b>${esc(v.t)}</b> <span style="color:var(--muted);font-size:13px">· ${v.d}</span>${v.ch.length?`<div class="chap" ${v.rtl?'dir="rtl"':''}>${v.ch.map(c=>`<button onclick="seek(${i},${c[0]})">${Math.floor(c[0]/60)}:${String(c[0]%60).padStart(2,'0')} ${esc(c[1])}</button>`).join('')}</div>`:''}</div></div>`}
+function seek(i,t){const v=document.getElementById('v'+i);if(v){try{v.currentTime=t;v.play().catch(()=>{})}catch(e){}}}
+function overview(p){const j=T(p,'journey');return `${p.videos.length?`<div class="${p.videos.length>1?'grid g2':''}" style="margin-bottom:16px;${p.videos.length>1?'':'max-width:760px'}">${p.videos.map((v,i)=>vid(p,v,i)).join('')}</div>`:''}
+ ${p.keyMsg?`<div class="key"><b style="color:${p.color}">${L('Our approach','نهجنا')}</b><div style="margin-top:4px">${esc(T(p,'keyMsg'))}</div></div>`:''}
+ ${j?`<div class="card" style="margin-bottom:14px"><div class="label" style="margin-top:0">${L('How it works','كيف يعمل')}</div><div class="journey">${j.map((s,i)=>`<span class="s" style="--c:${p.color}"><b>${i+1}</b>${esc(s)}</span>`).join(`<span style="color:var(--muted)">${lang==='ar'?'←':'→'}</span>`)}</div></div>`:''}
+ <div class="card"><div class="pitch">${esc(T(p,'pitch'))}</div><div class="pts">${T(p,'elevator').map((e,i)=>`<div style="--c:${p.color}"><b>${i+1}</b>${esc(e)}</div>`).join('')}</div></div>`}
+function features(p){return `<div class="fhd"><span>${L('Feature','الميزة')}</span><span>${L('What you get','ما تحصل عليه')}</span><span>${L('Details','التفاصيل')}</span></div>${p.features.map(f=>`<div class="feat"><div class="f">${esc(f.f)}</div><div>${esc(f.b)}</div><div>${esc(f.p)}</div></div>`).join('')}`}
+function media(p){return `${p.videos.length?`<div class="grid g2" style="margin-bottom:18px">${p.videos.map((v,i)=>vid(p,v,'m'+i)).join('')}</div>`:''}${p.shots.length?`<div class="grid g3">${p.shots.map((s,i)=>`<div class="shot" onclick="zoom(${i})"><img src="${s.img}" alt="${esc(s.t)}" style="object-fit:${s.fit}"><div class="cap"><b>${esc(s.t)}</b>${esc(s.n==='Illustration'?L('Illustration','رسم توضيحي'):s.n)}</div></div>`).join('')}</div>`:''}`}
+function zoom(i){const s=by(view.p).shots[i];$('#mb').innerHTML=`<h3>${esc(s.t)}</h3><img src="${s.img}" style="width:100%;border-radius:8px">`;$('#modal').classList.add('show')}
+function cases(p){return `<div class="grid g2">${p.cases.map(c=>`<div class="card"><h3>${esc(c.c)}</h3><p style="color:var(--muted);margin:0">${esc(c.o)}</p><div class="res">${c.r.map(r=>`<span>${esc(r)}</span>`).join('')}</div></div>`).join('')}</div>`}
+function tech(p){return `<table class="t"><tr><th>${L('Area','المجال')}</th><th>${L('Details','التفاصيل')}</th></tr>${p.tech.map(([a,b])=>`<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('')}</table>`}
+function faq(p){return p.faq.map(f=>`<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}
+function playIntro(){$('#mb').innerHTML=`<h3>${L('Introduction to the Qiyas products','مقدمة عن منتجات قياس')}</h3><video controls autoplay preload="metadata" poster="../videos/qiyas-intro-poster.jpg" style="width:100%;border-radius:8px;background:#000"><source src="../videos/qiyas-intro.mp4" type="video/mp4"></video>`;$('#modal').classList.add('show')}
+function closeM(){$('#modal').classList.remove('show');$('#mb').querySelectorAll('video').forEach(v=>v.pause())}
+function render(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.body.classList.toggle('rtl',lang==='ar');
+ $('#lEn').classList.toggle('on',lang==='en');$('#lAr').classList.toggle('on',lang==='ar');$('#ttl').textContent=L('Product Showcase','عرض المنتجات');document.title=L('IIH Product Showcase','عرض منتجات IIH');
+ $('#brand').style.cursor=view.only?'default':'pointer';
+ $('#main').innerHTML=view.p?product():home();$('#foot').textContent='© Ideal Innovation House · '+L('Product information for discussion purposes.','معلومات المنتجات لأغراض النقاش.');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+route();
+</script>
+</body>
+</html>
