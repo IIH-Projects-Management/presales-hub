@@ -39,9 +39,11 @@ function saveLead(l){
   const body=JSON.parse(JSON.stringify(l)); delete body.id;
   const i=LEADS.findIndex(x=>x.id===l.id); if(i>=0)LEADS[i]=JSON.parse(JSON.stringify(l)); else LEADS.unshift(JSON.parse(JSON.stringify(l)));
   writeQ=writeQ.then(async()=>{let error=null;try{await DB.collection('leads').doc(l.id).set({org:l.org||'',stage:l.stage||'new',owner:l.owner||'',json:JSON.stringify(body),updatedAt:l.updatedAt,updatedBy:ME.id})}catch(e){error=e}
-    if(error){if(isDenied(error)){dbWritable=false;toast(L('You have read-only access to leads.','لديك صلاحية قراءة فقط للفرص.'))}else toast(L('Could not save — please try again.','تعذّر الحفظ، حاول مرة أخرى.'));render();throw error}});
+    if(error){if(isDenied(error)){dbWritable=false;toast(L('You have read-only access to leads.','لديك صلاحية قراءة فقط للفرص.'))}else toast(L('Could not save — please try again.','تعذّر الحفظ، حاول مرة أخرى.'));render();throw error}
+    if(typeof syncEngFromLead==='function')await syncEngFromLead(l)});
   return writeQ.catch(()=>{});
 }
+const lc=l=>(typeof ENG!=='undefined'&&ENG[l.id])?(ENG[l.id].contacts||[]):(l.contacts||[]);
 function newId(){return 'L'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
 function blankLead(){return {id:newId(),org:'',dept:'',sector:'',city:'',website:'',source:'',owner:'',value:'',stage:'new',nextStep:'',nextDate:'',notes:'',products:[],contacts:[],activities:[],timeline:{start:nextSunday(),phases:[]},scope:null,createdAt:new Date().toISOString()}}
 function nextSunday(){const d=new Date();d.setDate(d.getDate()+((7-d.getDay())%7||7));return d.toISOString().slice(0,10)}
@@ -72,7 +74,7 @@ function vLeads(){
    <select class="txt" onchange="leadFilter.product=this.value;render()"><option value="">${L('All products','كل المنتجات')}</option>${PRODUCTS.map(p=>`<option value="${p.id}" ${f.product===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>
    ${f.stage||f.product||f.q?`<button class="btn" onclick="leadFilter={q:'',stage:'',product:''};render()">${L('Clear filters','مسح التصفية')}</button>`:''}</div>
   ${list.length?`<div class="card" style="padding:0;overflow:auto"><table class="leads"><thead><tr><th>${L('Client','العميل')}</th><th>${L('Stage','المرحلة')}</th><th>${L('Products','المنتجات')}</th><th>${L('Main contact','جهة الاتصال الرئيسية')}</th><th>${L('Value','القيمة')}</th><th>${L('Next step','الخطوة التالية')}</th><th>${L('Owner','المسؤول')}</th></tr></thead><tbody>
-  ${list.map(l=>{const c=(l.contacts||[]).find(x=>x.primary)||(l.contacts||[])[0];return `<tr onclick="go('lead','${l.id}')">
+  ${list.map(l=>{const c=lc(l).find(x=>x.primary)||lc(l)[0];return `<tr onclick="go('lead','${l.id}')">
    <td><b class="lk">${esc(l.org||L('(no name)','(بدون اسم)'))}</b><div class="small muted">${esc([l.dept,l.city].filter(Boolean).join(' · '))}</div></td>
    <td><span class="spill" style="--c:${stg(l.stage).c}">${stageName(l.stage)}</span><div class="meter" style="margin-top:6px;width:110px"><i style="width:${stageProgress(l.stage)}%;background:${stg(l.stage).c}"></i></div></td>
    <td>${(l.products||[]).map(id=>{const p=PRODUCTS.find(x=>x.id===id);return p?`<span class="pchip" style="--c:${p.color}">${esc(p.short)}</span>`:''}).join('')||'<span class="muted small">—</span>'}</td>
@@ -100,7 +102,7 @@ const isNew=()=>!LEADS.find(x=>x.id===cur.prod);
 function vLead(){
   if(leadsLocked())return lockedCard();
   const l=getLead(); if(!l)return dbState==='connecting'?`<div class="empty">${L('Loading…','جارٍ التحميل…')}</div>`:`<div class="empty">${L('Lead not found.','لم يتم العثور على الفرصة.')} <a href="javascript:go('leads')">${L('Back to leads','العودة إلى الفرص')}</a></div>`;
-  const ed=canEditLeads(), tabs=[['overview',L('Overview','نظرة عامة')],['contacts',L('Contacts','جهات الاتصال')+` <span class="n">${l.contacts.length}</span>`],['products',L('Products','المنتجات')+` <span class="n">${l.products.length}</span>`],['prep','📋 '+L('Meeting prep','تحضير الاجتماع')],['timeline',L('Delivery timeline','الجدول الزمني للتنفيذ')],['scope',L('Scope & Vision','النطاق والرؤية')],['activity',L('Activity','سجل النشاط')+` <span class="n">${l.activities.length}</span>`]];
+  const ed=canEditLeads(), tabs=[['overview',L('Overview','نظرة عامة')],['contacts',L('Contacts','جهات الاتصال')+` <span class="n">${(typeof ENG!=='undefined'&&ENG[l.id]?ENG[l.id].contacts:l.contacts).length}</span>`],['products',L('Products','المنتجات')+` <span class="n">${l.products.length}</span>`],['prep','📋 '+L('Meeting prep','تحضير الاجتماع')],['timeline',L('Delivery timeline','الجدول الزمني للتنفيذ')],['scope',L('Scope & Vision','النطاق والرؤية')],['activity',L('Activity','سجل النشاط')+` <span class="n">${(typeof ENG!=='undefined'&&ENG[l.id]?ENG[l.id].activities:l.activities).length}</span>`]];
   const si=STAGES.findIndex(s=>s.id===l.stage);
   return `${dbBanner()}<button class="back" onclick="leadDraft=null;go('leads')">${L('← All leads','→ كل الفرص')}</button>
   <div class="card lead-hd"><div style="flex:1"><div class="pc-cat">${esc(l.sector||L('Lead','فرصة'))}</div><h1>${esc(l.org||L('New lead','فرصة جديدة'))}</h1><div class="muted">${esc([l.dept,l.city].filter(Boolean).join(' · '))}</div>
@@ -110,7 +112,7 @@ function vLead(){
   <div class="stepper">${STAGES.filter(s=>s.id!=='lost').map((s,i)=>`<button class="step ${l.stage===s.id?'on':''} ${si>i&&l.stage!=='lost'?'done':''}" style="--c:${s.c}" ${ed?`onclick="setStage('${s.id}')"`:'disabled'}><i>${si>i&&l.stage!=='lost'?'✓':i+1}</i><span>${L(s.en,s.ar)}</span></button>`).join('')}
    <button class="step lost ${l.stage==='lost'?'on':''}" ${ed?`onclick="setStage('lost')"`:'disabled'}><i>✕</i><span>${L('Lost','لم تنجح')}</span></button></div>
   <div class="ptabs">${tabs.map(([id,n])=>`<button class="pt ${leadTab===id?'on':''}" onclick="leadTab='${id}';render()">${n}</button>`).join('')}</div>
-  <div id="leadForm">${({overview:lOverview,contacts:lContacts,products:lProducts,prep:lPrep,timeline:lTimeline,scope:lScope,activity:lActivity})[leadTab](l,ed)}</div>`;
+  <div id="leadForm">${(typeof ENG!=='undefined'&&ENG[l.id]&&['contacts','activity'].includes(leadTab))?leadEngPanel(l,leadTab):({overview:lOverview,contacts:lContacts,products:lProducts,prep:lPrep,timeline:lTimeline,scope:lScope,activity:lActivity})[leadTab](l,ed)}</div>`;
 }
 function fld(l,k,label,ed,type,ph){return `<div class="field"><label>${label}</label>${ed?(type==='area'?`<textarea class="txt" rows="3" oninput="leadDraft.${k}=this.value">${esc(l[k]||'')}</textarea>`:`<input class="txt" type="${type||'text'}" value="${esc(l[k]||'')}" placeholder="${esc(ph||'')}" oninput="leadDraft.${k}=this.value">`):`<div class="ro">${esc(l[k]||'—')}</div>`}</div>`}
 function saveBar(ed,label){return ed?`<div class="savebar"><button class="btn primary" onclick="commitLead()">💾 ${label||L('Save','حفظ')}</button>${isNew()?`<button class="btn" onclick="leadDraft=null;go('leads')">${L('Cancel','إلغاء')}</button>`:''}</div>`:''}
@@ -256,7 +258,7 @@ function prefillScope(l,lang){const A=lang==='ar', prods=l.products.map(id=>PROD
   return {lang, client:keep('client',l.org), dept:keep('dept',l.dept), solution:keep('solution',prods.map(p=>p.name).join(', ')), version:keep('version','0.1'), date:keep('date',dmy()), classification:keep('classification',A?'سري، للاستخدام الداخلي':'Confidential, for internal use'), preparedBy:keep('preparedBy',l.owner),
    exec:keep('exec',''), background:keep('background',''), vision:keep('vision',''), overview:keep('overview',''),
    drivers:keep('drivers',[]), problems:keep('problems',[]), value:keep('value',A?['الكفاءة: ','الجودة: ','دعم القرار: ','الخدمة: ']:['Efficiency: ','Quality: ','Decision support: ','Service: ']), inScope:keep('inScope',prods.map(p=>p.name+(A?' — ':' — ')+(A?(PROD_AR[p.id]||{}).cat||p.cat:p.cat))), outScope:keep('outScope',[]), assumptions:keep('assumptions',[]), constraints:keep('constraints',[]),
-   objectives:keep('objectives',[]), stakeholders:keep('stakeholders',l.contacts.map(c=>({n:c.name+(c.position?(A?'، ':', ')+c.position:''),r:c.primary?(A?'مالك الأعمال والمعتمد':'Business owner and approver'):'',i:c.primary?(A?'عالٍ':'High'):(A?'متوسط':'Medium')}))),
+   objectives:keep('objectives',[]), stakeholders:keep('stakeholders',lc(l).map(c=>({n:c.name+(c.position?(A?'، ':', ')+c.position:''),r:c.primary?(A?'مالك الأعمال والمعتمد':'Business owner and approver'):'',i:c.primary?(A?'عالٍ':'High'):(A?'متوسط':'Medium')}))),
    users:keep('users',[]), ai:keep('ai',prods.map(p=>({a:p.name,m:A?(PROD_AR[p.id]||{}).tagline||p.tagline:p.tagline,f:''}))), kpis:keep('kpis',[]), risks:keep('risks',[]),
    next:keep('next',(A?[['اعتماد وثيقة النطاق والرؤية','مالك الحل'],['جلسات جمع المتطلبات مع كل إدارة','محلل الأعمال'],['تسليم وثيقة المتطلبات واعتمادها','محلل الأعمال / مالك الحل'],['تصميم الحل','فريق التنفيذ'],['التطوير والاختبار والإطلاق','فريق التنفيذ']]:[['Scope and Vision sign-off','Solution owner'],['Requirements sessions with each department','Business analyst'],['BRD submission and approval','Business analyst / solution owner'],['Solution design','Implementation team'],['Build, testing and go-live','Implementation team']]).map(([m,o])=>({m,o,d:''})))}}
 function lScope(l,ed){
@@ -290,8 +292,8 @@ function lPrep(l){
   const prods=l.products.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);
   if(!prods.length)return `<div class="empty">${L('Select the products this client needs (Products tab) and the meeting prep pack builds itself.','اختر المنتجات التي يحتاجها العميل (تبويب المنتجات) وسيُنشأ ملف تحضير الاجتماع تلقائياً.')}</div>`;
   const g=GOALS[l.stage]||GOALS.new;
-  const people=l.contacts.map(c=>{const k=kwOf(c.position+' '+c.name);const m=[];prods.forEach(p=>p.personas.forEach(ps=>{const pk=kwOf(ps.r);if(k.length&&pk.some(x=>k.includes(x)&&x!=='mgr'))m.push({p,ps})}));return {c,m:m.slice(0,3)}});
-  const checks=[[!!l.contacts.find(c=>c.primary),L('Main contact identified','تحديد جهة الاتصال الرئيسية')],[l.contacts.some(c=>kwOf(c.position).includes('exec')),L('Decision maker among the contacts','صاحب القرار ضمن جهات الاتصال')],[leadVal(l)>0,L('Deal value estimated','تقدير قيمة الصفقة')],[!!l.closeDate,L('Expected close date set','تحديد تاريخ الإغلاق المتوقع')],[!!(l.nextStep&&l.nextDate),L('Next step and date agreed','الاتفاق على الخطوة التالية وتاريخها')],[!!l.scope,L('Scope & Vision started','بدء وثيقة النطاق والرؤية')],[(l.timeline&&l.timeline.phases||[]).some(p=>p.items&&p.items.length),L('Delivery timeline drafted','إعداد الجدول الزمني المبدئي')]];
+  const people=lc(l).map(c=>{const k=kwOf(c.position+' '+c.name);const m=[];prods.forEach(p=>p.personas.forEach(ps=>{const pk=kwOf(ps.r);if(k.length&&pk.some(x=>k.includes(x)&&x!=='mgr'))m.push({p,ps})}));return {c,m:m.slice(0,3)}});
+  const checks=[[!!lc(l).find(c=>c.primary),L('Main contact identified','تحديد جهة الاتصال الرئيسية')],[lc(l).some(c=>kwOf(c.position).includes('exec')),L('Decision maker among the contacts','صاحب القرار ضمن جهات الاتصال')],[leadVal(l)>0,L('Deal value estimated','تقدير قيمة الصفقة')],[!!l.closeDate,L('Expected close date set','تحديد تاريخ الإغلاق المتوقع')],[!!(l.nextStep&&l.nextDate),L('Next step and date agreed','الاتفاق على الخطوة التالية وتاريخها')],[!!l.scope,L('Scope & Vision started','بدء وثيقة النطاق والرؤية')],[(l.timeline&&l.timeline.phases||[]).some(p=>p.items&&p.items.length),L('Delivery timeline drafted','إعداد الجدول الزمني المبدئي')]];
   return `<div class="card prep-hd"><div style="flex:1"><div class="pc-cat">${L('Meeting prep pack','ملف تحضير الاجتماع')} · ${stageName(l.stage)}</div><h2 style="margin:4px 0">${L('Goal of the next meeting','هدف الاجتماع القادم')}: ${L(g[0],g[1])}</h2>
    <div class="muted small">${L('Built automatically from this lead\'s products and contacts. Detailed product content is in English.','يُنشأ تلقائياً من منتجات الفرصة وجهات الاتصال. المحتوى التفصيلي للمنتجات باللغة الإنجليزية.')}</div></div>
    <button class="btn primary" onclick="copyText(prepText(),L('Brief copied — paste it into an e-mail or notes','تم نسخ الملخص — الصقه في بريد أو ملاحظات'))">⎘ ${L('Copy brief','نسخ الملخص')}</button></div>
@@ -311,7 +313,14 @@ function lPrep(l){
 }
 function prepText(){const l=leadDraft,prods=l.products.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean),g=GOALS[l.stage]||GOALS.new;
   let t=`MEETING PREP — ${l.org}\nStage: ${stg(l.stage).en} · Goal: ${g[0]}\n`;
-  if(l.contacts.length)t+=`\nWHO IS IN THE ROOM\n`+l.contacts.map(c=>`- ${c.name}${c.position?', '+c.position:''}`).join('\n')+'\n';
+  if(lc(l).length)t+=`\nWHO IS IN THE ROOM\n`+lc(l).map(c=>`- ${c.name}${c.position?', '+c.position:''}`).join('\n')+'\n';
   prods.forEach(p=>{t+=`\n=== ${p.name} ===\n${p.notYet?'NOTE: '+p.notYet+'\n':''}Pitch: ${p.pitch}\n\nDiscovery questions:\n`+p.pains.map((x,i)=>`${i+1}. ${x.q}`).join('\n')+`\n\nBenefits to lead with:\n`+p.features.slice(0,5).map(f=>`- ${f.b} (${f.f})`).join('\n');
     if(p.obj.length)t+=`\n\nObjections to expect:\n`+p.obj.slice(0,4).map(o=>`- ${o.o} → ${o.r}`).join('\n');t+='\n'});
   return t;}
+
+/* Once a lead has a client account, contacts and the activity log live there (single source of truth). */
+function leadEngPanel(l,tab){const e=ENG[l.id];
+  const hd=`<div class="note-info">${L('Contacts and activities for this client are kept in its client account, so the project manager and sales see the same record.','تُحفظ جهات الاتصال والأنشطة لهذا العميل في حساب العميل، ليرى مدير المشروع والمبيعات السجل نفسه.')} <a href="javascript:go('eng','acct','${l.id}~${tab==='contacts'?'contacts':'activities'}')">${L('Open the client account →','افتح حساب العميل ←')}</a></div>`;
+  if(tab==='contacts')return hd+((e.contacts||[]).length?`<div class="grid g2">${e.contacts.map(c=>`<div class="card contact"><b>${esc(c.name)}</b>${c.primary?' ★':''}<div class="small muted">${esc(c.position||'')}</div><div class="small">${c.email?'✉ '+esc(c.email)+' ':''}${c.mobile?'📱 <span dir="ltr">'+esc(c.mobile)+'</span>':''}</div></div>`).join('')}</div>`:`<div class="empty">—</div>`);
+  const sales=(l.activities||[]).filter(a=>/^(Stage changed|تغيّرت المرحلة)/.test(a.text||''));
+  return hd+engActs(e).map(a=>`<div class="fu-row"><span class="small muted" style="min-width:82px">${esc(a.d)}</span><b>${esc(a.title)}</b><span class="small muted">${a.status==='planned'?L('planned','مخطط'):lbl(EACT,a.type)}</span></div>`).join('')+(sales.length?`<details class="small" style="margin-top:12px"><summary>${L('Sales stage history','سجل مراحل البيع')} (${sales.length})</summary>${sales.map(a=>`<div>${esc(a.d)} — ${esc(a.text)}</div>`).join('')}</details>`:'');}

@@ -25,7 +25,7 @@ function execData(){
   const products=PRODUCTS.map(p=>{const a=open.filter(l=>(l.products||[]).includes(p.id));return {id:p.id,name:p.name,short:p.short||p.name,c:p.color||'#6B009D',n:a.length,v:sum(a,leadVal),won:won.filter(l=>(l.products||[]).includes(p.id)).length}}).filter(x=>x.n||x.won);
   const owners=[...new Set(open.map(l=>(l.owner||'').trim()||L('Unassigned','غير مسند')))].map(o=>{const a=open.filter(l=>((l.owner||'').trim()||L('Unassigned','غير مسند'))===o);return {o,n:a.length,v:sum(a,leadVal),late:a.filter(l=>l.nextDate&&l.nextDate<today).length}}).sort((a,b)=>b.v-a.v||b.n-a.n);
   const top=open.slice().sort((a,b)=>leadVal(b)*leadProb(b)-leadVal(a)*leadProb(a)||leadVal(b)-leadVal(a)).slice(0,6);
-  const updates=[];LEADS.forEach(l=>(l.activities||[]).forEach(a=>{if(a.d&&a.d>=since)updates.push({d:a.d,org:l.org,id:l.id,type:a.type,text:a.text})}));
+  const updates=[];LEADS.forEach(l=>{const e=typeof ENG!=='undefined'&&ENG[l.id];if(e)(e.activities||[]).forEach(a=>{if(a.status!=='planned'&&a.d&&a.d>=since)updates.push({d:a.d,org:l.org,id:l.id,type:OLD_ACT[a.type]?a.type:'note',text:a.title+(a.summary&&a.summary!==a.title?' — '+a.summary.slice(0,140):'')})});else (l.activities||[]).forEach(a=>{if(a.d&&a.d>=since)updates.push({d:a.d,org:l.org,id:l.id,type:a.type,text:a.text})})});
   updates.sort((a,b)=>b.d.localeCompare(a.d));
   const overdue=open.filter(l=>l.nextDate&&l.nextDate<today).sort((a,b)=>a.nextDate.localeCompare(b.nextDate));
   const noNext=open.filter(l=>!l.nextStep&&!l.nextDate);

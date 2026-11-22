@@ -84,7 +84,7 @@ async function startFor(u){
   try{await loadProducts()}catch(e){return bootScreen(`<div class="note-warn">${L('Could not load product content','تعذّر تحميل محتوى المنتجات')}: ${esc(e.message)}</div>${outBtn()}`)}
   if(!PRODUCTS.length)return bootScreen(r==='leadership'?`<p>👋 ${L('Welcome — you are the first Leadership account.','مرحباً — أنت أول حساب في القيادة.')}</p><p class="muted small">${L('The database has no product content yet. Import it once to start.','لا يوجد محتوى منتجات في قاعدة البيانات بعد. استورده مرة واحدة للبدء.')}</p>${importBox()}<div style="margin-top:12px">${outBtn()}</div>`:`<p>${L('Product content has not been loaded yet. Please check back later.','لم يُحمَّل محتوى المنتجات بعد. يرجى المحاولة لاحقاً.')}</p>${outBtn()}`);
   document.getElementById('accBadge').style.display='';const av=document.getElementById('av');if(av)av.textContent=(ME.name||ME.email).trim().slice(0,2).toUpperCase();
-  startApp(r);initLeads();
+  startApp(r);initLeads();initEngage();
 }
 function boot(){
   try{const l=localStorage.getItem('hub-lang');if(l)lang=l}catch(e){}
