@@ -76,7 +76,7 @@ function jsonDocs(q,blank){const m={};q.docs.forEach(d=>{let x={};try{x=JSON.par
 function initEngage(){
   engUnsubs.forEach(u=>{try{u()}catch(e){}});engUnsubs=[];
   const sub=(c,f,err)=>engUnsubs.push(DB.collection(c).onSnapshot(f,err||(()=>{})));
-  DB.collection('config').doc('stages').get().then(d=>{STAGECFG=d.exists?d.data():null;engRender()}).catch(()=>{});
+  DB.collection('config').doc('stages').get().then(d=>{STAGECFG=null;if(d.exists){const x=d.data();try{STAGECFG=x.json?JSON.parse(x.json):x}catch(e){}}engRender()}).catch(()=>{});
   if(canReadOps()){engState='connecting';
     sub('accounts',q=>{ACC=jsonDocs(q,accBlank);engRender()});
     sub('engagements',q=>{ENG=jsonDocs(q,engBlank);Object.values(ENG).forEach(e=>{if(!e.accountId)e.accountId=e._top.accountId||'';if(!e.name&&e.org)e.name='';});engState='live';engRender()},e=>{engState='error';engRender()});

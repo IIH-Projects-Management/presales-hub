@@ -1,4 +1,4 @@
-const HUB_VERSION='4.0.0';
+const HUB_VERSION='4.0.1';
 /* ============ STATE & ROUTING ============ */
 let role='presales', realRole='presales', cur={view:'home', prod:null, cat:'overview'};
 let lang='en'; try{lang=localStorage.getItem('hub-lang')||'en'}catch(e){}
