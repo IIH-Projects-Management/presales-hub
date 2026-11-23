@@ -348,6 +348,14 @@ table.leads tr.od td{background:#FFF4F3}
 .pe-nav button{border:0;background:transparent;text-align:start;padding:8px 10px;border-radius:8px;font:inherit;cursor:pointer;color:var(--ink)}.pe-nav button.on{background:var(--grad);color:#fff;font-weight:600}
 .pe-block{margin-bottom:12px}.pe-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;border-top:1px dashed var(--line);padding-top:10px;margin-top:10px}
 .pe-rb{display:flex;flex-direction:column;gap:4px}
+/* v11 engagement v4 */
+.qa-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.crit{display:block;margin:4px 0;font-size:13px}
+.eng-card{cursor:pointer}.eng-card:hover{border-color:var(--c,#6B009D)}
+.stage-card{margin:10px 0 14px}
+.bar{height:6px;border-radius:4px;background:var(--soft);overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:#6B009D}
+.skel{height:72px;border-radius:10px;background:linear-gradient(90deg,var(--soft),#fff,var(--soft));background-size:200% 100%;animation:sk 1.2s infinite;margin-bottom:12px}.skel.short{width:60%}
+@keyframes sk{to{background-position:-200% 0}}
 </style>
 </head>
 <body>
@@ -375,14 +383,16 @@ table.leads tr.od td{background:#FFF4F3}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="js/firebase-config.js?v=3.1.0" charset="utf-8"></script>
-<script src="js/catalog.js?v=3.1.0" charset="utf-8"></script>
-<script src="js/docgen.js?v=3.1.0" charset="utf-8"></script>
-<script src="js/leads.js?v=3.1.0" charset="utf-8"></script>
-<script src="js/leadership.js?v=3.1.0" charset="utf-8"></script>
-<script src="js/engage.js?v=3.1.0" charset="utf-8"></script>
-<script src="js/prodedit.js?v=3.1.0" charset="utf-8"></script>
-<script src="js/app.js?v=3.1.0" charset="utf-8"></script>
-<script src="js/boot.js?v=3.1.0" charset="utf-8"></script>
+<script src="js/firebase-config.js?v=4.0.0" charset="utf-8"></script>
+<script src="js/catalog.js?v=4.0.0" charset="utf-8"></script>
+<script src="js/docgen.js?v=4.0.0" charset="utf-8"></script>
+<script src="js/leads.js?v=4.0.0" charset="utf-8"></script>
+<script src="js/leadership.js?v=4.0.0" charset="utf-8"></script>
+<script src="js/engage.js?v=4.0.0" charset="utf-8"></script>
+<script src="js/engage-reg.js?v=4.0.0" charset="utf-8"></script>
+<script src="js/engage-mig.js?v=4.0.0" charset="utf-8"></script>
+<script src="js/prodedit.js?v=4.0.0" charset="utf-8"></script>
+<script src="js/app.js?v=4.0.0" charset="utf-8"></script>
+<script src="js/boot.js?v=4.0.0" charset="utf-8"></script>
 </body>
 </html>
